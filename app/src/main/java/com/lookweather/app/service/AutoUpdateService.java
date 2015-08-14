@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.lookweather.app.receiver.AutoUpdateReceiver;
 import com.lookweather.app.util.HttpCallbackListener;
@@ -32,8 +33,10 @@ public class AutoUpdateService extends Service {
                 updateWeather();
             }
         }).start();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        int anHour = 8 * 60 * 60 * 1000; // 这是8小时的毫秒数
+        int anHour = prefs.getInt("auto_update_time",8) * 60 * 60 * 1000; // 这是8小时的毫秒数
+        Log.d("auto_update_time",prefs.getInt("auto_update_time",8)+"");
         long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
         Intent i = new Intent(this, AutoUpdateReceiver.class);
         PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
@@ -44,8 +47,7 @@ public class AutoUpdateService extends Service {
      * 更新天气信息。
      */
     private void updateWeather() {
-        SharedPreferences prefs = PreferenceManager.
-                getDefaultSharedPreferences(this);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherCode = prefs.getString("weather_code", "");
         String address = "http://www.weather.com.cn/data/cityinfo/" +
                 weatherCode + ".html";

@@ -79,10 +79,16 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
     /**
      * 设置dialog布局
      */
-    private EditText ed_pl;
+    private EditText autoUpdateTime;
     private Button ok;
     private Button cancel;
     private AlertDialog dialog;
+
+    /**
+     * 创建SharedPreferences对象
+     */
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -202,7 +208,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
      * 从SharedPreferences文件中读取存储的天气信息，并显示到界面上。
      */
     private void showWeather() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
         cityNameText.setText(prefs.getString("city_name", ""));
         temp1Text.setText(prefs.getString("temp1", ""));
         temp2Text.setText(prefs.getString("temp2", ""));
@@ -218,12 +224,15 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         Intent intent = new Intent(this, AutoUpdateService.class);
         startService(intent);
     }
+
     private enum WeatherKind {
         cloudy, fog, hailstone, light_rain, moderte_rain, overcast, rain_snow,
-        sand_strom, rainstorm, shower_rain, snow, sunny, thundershower,thundershower_shower_rain,
-        shower_rain_moderte_rain,cloudy_sunny,shower_rain_thundershower;
+        sand_strom, rainstorm, shower_rain, snow, sunny, thundershower, thundershower_shower_rain,
+        shower_rain_moderte_rain, cloudy_sunny, shower_rain_thundershower;
     }
+
     private static Map<String, WeatherKind> weatherkind = new HashMap<String, WeatherKind>();
+
     static {
         weatherkind.put("多云", WeatherKind.cloudy);
         weatherkind.put("雾", WeatherKind.fog);
@@ -243,6 +252,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         weatherkind.put("多云转晴", WeatherKind.cloudy_sunny);
         weatherkind.put("阵雨转雷阵雨", WeatherKind.shower_rain_thundershower);
     }
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void changeBackground(WeatherKind weather) {
         weatherBg = findViewById(R.id.weather_background);
@@ -305,31 +315,37 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         }
 
     }
+
     /**
-     * 设置密码对话框
+     * 设置对话框
      */
     private void showDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(WeatherActivity.this);
-        View view=	View.inflate(WeatherActivity.this, R.layout.dialog_layout, null);
-        ed_pl = (EditText) view.findViewById(R.id.ed_pl);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = View.inflate(this, R.layout.dialog_layout, null);
+        autoUpdateTime = (EditText) view.findViewById(R.id.ed_pl);
         ok = (Button) view.findViewById(R.id.ok);
         cancel = (Button) view.findViewById(R.id.cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //把这个对话框取消掉
-                return;
+                dialog.dismiss();
             }
         });
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
+                editor.putBoolean("auto_update", true);
+                int time = 8;
+                if (!TextUtils.isEmpty(autoUpdateTime.getText())) {
+                    String updataTime = autoUpdateTime.getText().toString();
+                    time = Integer.parseInt(updataTime);
+                    editor.putInt("auto_update_time", time);
+                }
             }
         });
         dialog = builder.create();
-        dialog.setView(view,0,0,0,0);
+        dialog.setView(view, 0, 0, 0, 0);
         dialog.show();
     }
 }
