@@ -30,9 +30,19 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:background="@drawable/refresh" />
+        <Button
+            android:id="@+id/menu"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_toLeftOf="@+id/refresh_weather"
+            android:layout_centerVertical="true"
+            android:background="@drawable/menu"
+            android:layout_marginRight="5dp"
+            />
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/weather_background"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

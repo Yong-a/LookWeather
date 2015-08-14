@@ -28,7 +28,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Administrator on 2015/6/16 0016.
+ * 项目名称：LookWeather
+ * 类描述：选择地区Activity
+ * 创建人：Yong_a
+ * 创建时间：2015/8/11 21:55
+ * 修改人：Yong_a
+ * 修改时间：2015/8/11 21:55
+ * 修改备注：修改文档注释
  */
 public class ChooseAreaActivity extends Activity {
     public static final int LEVEL_PROVINCE = 0;

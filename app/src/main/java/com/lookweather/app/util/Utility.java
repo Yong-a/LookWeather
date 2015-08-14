@@ -20,6 +20,7 @@ import java.util.Locale;
 /**
  * Created by Administrator on 2015/6/16 0016.
  */
+
 public class Utility {
     public synchronized static boolean handleProvincesResponse(LookWeatherDB lookWeatherDB,String response){
         if (!TextUtils.isEmpty(response)) {
