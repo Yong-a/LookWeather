@@ -88,6 +88,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
     private Button ok;
     private Button cancel;
     private CheckBox autoUpdate;
+    private LinearLayoutautoupdate_rate
     private AlertDialog dialog;
 
     /**
@@ -346,7 +347,8 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
         autoUpdateTime = (EditText) view.findViewById(R.id.ed_pl);
         ok = (Button) view.findViewById(R.id.ok);
         cancel = (Button) view.findViewById(R.id.cancel);
-        autoUpdate = (CheckBox) findViewById(R.id.auto_update); 
+        autoUpdate = (CheckBox) findViewById(R.id.auto_update);
+        autoupdate_rate = (LinearLayout) view.findViewById(R.id.autoupdate_rate)
         boolean autoUpdate = prefs.getBoolean("auto_update", true);  
         int updateTime = prefs.getInt("auto_update_time", 8); 
         if (autoUpdate) {  
@@ -372,7 +374,8 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
                 Intent intent = new Intent(WeatherActivity.this, AutoUpdateService.class);
                 startService(intent);
             } else {  
-                editor.putBoolean("auto_update", false);  
+                editor.putBoolean("auto_update", false); 
+                autoupdate_rate.setVisiblity(View.GONE);
                 Intent intent = new Intent(WeatherActivity.this, AutoUpdateService.class);  
                 stopService(intent); 
             }  
