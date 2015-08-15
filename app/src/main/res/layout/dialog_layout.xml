@@ -2,8 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
-    android:background="@null"
-    android:gravity="center_horizontal"
     android:orientation="vertical">
 
     <TextView
@@ -11,47 +9,75 @@
         android:layout_height="50dp"
         android:background="@drawable/dialog_t"
         android:gravity="center"
-        android:text="设置更新频率"
+        android:text="设置"
         android:textColor="#000000"
         android:textSize="22sp"
         android:textStyle="bold" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="25dp"
+            android:text="开启自动更新"
+            android:textSize="20sp" />
+
+        <CheckBox
+            android:id="@+id/auto_update"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:button="@drawable/selector_btn_checked" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="45dp"
+            android:text="自动更新频率"
+            android:textSize="20sp" />
+
         <EditText
             android:id="@+id/ed_pl"
             android:layout_width="45dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:background="@drawable/edit"
             android:gravity="center"
             android:hint="8"
             android:inputType="number"
-            android:textCursorDrawable="@null"
-            />
+            android:textCursorDrawable="@null" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="小时"
-            android:gravity="center"
             android:layout_gravity="center"
+            android:gravity="center"
+            android:text="小时"
             android:textSize="20sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/cancel"
             android:layout_width="140dp"
             android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
             android:background="@drawable/selector_cancel"
-            android:gravity="center"
             android:text="取消"
             android:textStyle="bold" />
 
@@ -59,8 +85,8 @@
             android:id="@+id/ok"
             android:layout_width="140dp"
             android:layout_height="50dp"
+            android:layout_marginRight="10dp"
             android:background="@drawable/selector_ok"
-            android:gravity="center"
             android:text="确定"
             android:textStyle="bold" />
     </LinearLayout>

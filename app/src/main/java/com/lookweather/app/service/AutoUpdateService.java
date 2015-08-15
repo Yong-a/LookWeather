@@ -35,27 +35,26 @@ public class AutoUpdateService extends Service {
         }).start();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        int anHour = prefs.getInt("auto_update_time",8) * 60 * 60 * 1000; // 这是8小时的毫秒数
-        Log.d("auto_update_time",prefs.getInt("auto_update_time",8)+"");
+        int anHour = prefs.getInt("auto_update_time", 8) * 60 * 60 * 1000; // 这是8小时的毫秒数
+        Log.d("AutoUpdateService", prefs.getInt("auto_update_time", 8) + "");
         long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
         Intent i = new Intent(this, AutoUpdateReceiver.class);
         PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
         manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pi);
         return super.onStartCommand(intent, flags, startId);
     }
+
     /**
      * 更新天气信息。
      */
     private void updateWeather() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherCode = prefs.getString("weather_code", "");
-        String address = "http://www.weather.com.cn/data/cityinfo/" +
-                weatherCode + ".html";
+        String address = "http://www.weather.com.cn/data/cityinfo/" + weatherCode + ".html";
         HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
-                Utility.handleWeatherResponse(AutoUpdateService.this,
-                        response);
+                Utility.handleWeatherResponse(AutoUpdateService.this, response);
             }
 
             @Override

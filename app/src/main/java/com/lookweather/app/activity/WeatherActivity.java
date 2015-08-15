@@ -8,13 +8,17 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.internal.view.menu.MenuPopupHelper;
+import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lookweather.app.R;
 import com.lookweather.app.service.AutoUpdateService;
@@ -22,6 +26,7 @@ import com.lookweather.app.util.HttpCallbackListener;
 import com.lookweather.app.util.HttpUtil;
 import com.lookweather.app.util.Utility;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +39,7 @@ import java.util.Map;
  * 修改时间：2015/8/11 21:55
  * 修改备注：修改文档注释
  */
-public class WeatherActivity extends Activity implements View.OnClickListener {
+public class WeatherActivity extends Activity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
     private LinearLayout weatherInfoLayout;
     /**
      * 用于显示城市名
@@ -90,6 +95,8 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
 
+    private long exitTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,7 +148,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
                 }
                 break;
             case R.id.menu:
-                showDialog();
+                showMenu(menu);
             default:
                 break;
         }
@@ -221,16 +228,22 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         currentDateText.setText(prefs.getString("current_date", ""));
         weatherInfoLayout.setVisibility(View.VISIBLE);
         cityNameText.setVisibility(View.VISIBLE);
-        Intent intent = new Intent(this, AutoUpdateService.class);
+        Intent intent = new Intent(WeatherActivity.this, AutoUpdateService.class);
         startService(intent);
     }
 
+    /**
+     * 天气的枚举类型
+     */
     private enum WeatherKind {
         cloudy, fog, hailstone, light_rain, moderte_rain, overcast, rain_snow,
         sand_strom, rainstorm, shower_rain, snow, sunny, thundershower, thundershower_shower_rain,
         shower_rain_moderte_rain, cloudy_sunny, shower_rain_thundershower;
     }
 
+    /**
+     * 创建HashMap对象，中文天气情况的键对应枚举类型
+     */
     private static Map<String, WeatherKind> weatherkind = new HashMap<String, WeatherKind>();
 
     static {
@@ -253,6 +266,9 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         weatherkind.put("阵雨转雷阵雨", WeatherKind.shower_rain_thundershower);
     }
 
+    /**
+     * @param weather 传入的枚举类型
+     */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void changeBackground(WeatherKind weather) {
         weatherBg = findViewById(R.id.weather_background);
@@ -335,17 +351,61 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editor.putBoolean("auto_update", true);
                 int time = 8;
+                editor = prefs.edit();
                 if (!TextUtils.isEmpty(autoUpdateTime.getText())) {
                     String updataTime = autoUpdateTime.getText().toString();
                     time = Integer.parseInt(updataTime);
                     editor.putInt("auto_update_time", time);
                 }
+                editor.commit();
+                Intent intent = new Intent(WeatherActivity.this, AutoUpdateService.class);
+                startService(intent);
+                dialog.dismiss();
             }
         });
         dialog = builder.create();
         dialog.setView(view, 0, 0, 0, 0);
         dialog.show();
+    }
+
+    public void showMenu(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        getMenuInflater().inflate(R.menu.menu_main, popup.getMenu());
+        popup.setOnMenuItemClickListener(this);
+        try {
+            Field field = popup.getClass().getDeclaredField("mPopup");
+            field.setAccessible(true);
+            MenuPopupHelper mHelper = (MenuPopupHelper) field.get(popup);
+            mHelper.setForceShowIcon(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //强制popup显示Icon
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_autoUpdate:
+                showDialog();
+                break;
+            case R.id.action_exit:
+                finish();
+                break;
+            default:
+        }
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if ((System.currentTimeMillis() - exitTime) > 2000) {// System.currentTimeMillis()无论何时调用，肯定大于2000
+            Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+            exitTime = System.currentTimeMillis();
+        } else {
+            finish();
+        }
     }
 }

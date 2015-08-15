@@ -10,11 +10,11 @@
         android:background="#484E61" >
         <Button
             android:id="@+id/switch_city"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:background="@drawable/home" />
+            android:background="@drawable/selector_city" />
         <TextView
             android:id="@+id/city_name"
             android:layout_width="wrap_content"
@@ -24,19 +24,19 @@
             android:textSize="24sp" />
         <Button
             android:id="@+id/refresh_weather"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:background="@drawable/refresh" />
+            android:background="@drawable/selector_refresh" />
         <Button
             android:id="@+id/menu"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
             android:layout_toLeftOf="@+id/refresh_weather"
             android:layout_centerVertical="true"
-            android:background="@drawable/menu"
+            android:background="@drawable/selector_tools"
             android:layout_marginRight="5dp"
             />
     </RelativeLayout>
