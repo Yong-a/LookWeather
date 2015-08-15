@@ -31,70 +31,74 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * ÏîÄ¿Ãû³Æ£ºLookWeather
- * ÀàÃèÊö£ºÏÔÊ¾ÌìÆøActivity
- * ´´½¨ÈË£ºYong_a
- * ´´½¨Ê±¼ä£º2015/8/11 21:55
- * ĞŞ¸ÄÈË£ºYong-a
- * ĞŞ¸ÄÊ±¼ä£º2015/8/11 21:55
- * ĞŞ¸Ä±¸×¢£ºĞŞ¸ÄÎÄµµ×¢ÊÍ
+ * é¡¹ç›®åç§°ï¼šLookWeather
+ * ç±»æè¿°ï¼šæ˜¾ç¤ºå¤©æ°”Activity
+ * åˆ›å»ºäººï¼šYong_a
+ * åˆ›å»ºæ—¶é—´ï¼š2015/8/11 21:55
+ * ä¿®æ”¹äººï¼šYong-a
+ * ä¿®æ”¹æ—¶é—´ï¼š2015/8/11 21:55
+ * ä¿®æ”¹å¤‡æ³¨ï¼šä¿®æ”¹æ–‡æ¡£æ³¨é‡Š
  */
 public class WeatherActivity extends Activity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
     private LinearLayout weatherInfoLayout;
     /**
-     * ÓÃÓÚÏÔÊ¾³ÇÊĞÃû
+     * ç”¨äºæ˜¾ç¤ºåŸå¸‚å
      */
     private TextView cityNameText;
     /**
-     * ÓÃÓÚÏÔÊ¾·¢²¼Ê±¼ä
+     * ç”¨äºæ˜¾ç¤ºå‘å¸ƒæ—¶é—´
      */
     private TextView publishText;
     /**
-     * ÓÃÓÚÏÔÊ¾ÌìÆøÃèÊöĞÅÏ¢
+     * ç”¨äºæ˜¾ç¤ºå¤©æ°”æè¿°ä¿¡æ¯
      */
     private TextView weatherDespText;
     /**
-     * ÓÃÓÚÏÔÊ¾ÆøÎÂ1
+     * ç”¨äºæ˜¾ç¤ºæ°”æ¸©1
      */
     private TextView temp1Text;
     /**
-     * ÓÃÓÚÏÔÊ¾ÆøÎÂ2
+     * ç”¨äºæ˜¾ç¤ºæ°”æ¸©2
      */
     private TextView temp2Text;
     /**
-     * ÓÃÓÚÏÔÊ¾µ±Ç°ÈÕÆÚ
+     * ç”¨äºæ˜¾ç¤ºå½“å‰æ—¥æœŸ
      */
     private TextView currentDateText;
     /**
-     * ÇĞ»»³ÇÊĞ°´Å¥
+     * åˆ‡æ¢åŸå¸‚æŒ‰é’®
      */
     private Button switchCity;
     /**
-     * ¸üĞÂÌìÆø°´Å¥
+     * æ›´æ–°å¤©æ°”æŒ‰é’®
      */
     private Button refreshWeather;
     /**
-     * ²Ëµ¥°´Å¥
+     * èœå•æŒ‰é’®
      */
     private Button menu;
     /**
-     * ±³¾°Í¼Æ¬
+     * èƒŒæ™¯å›¾ç‰‡
      */
     private View weatherBg;
     /**
-     * ÉèÖÃdialog²¼¾Ö
+     * è®¾ç½®dialogå¸ƒå±€
      */
     private EditText autoUpdateTime;
     private Button ok;
     private Button cancel;
+    private CheckBox autoUpdate;
     private AlertDialog dialog;
 
     /**
-     * ´´½¨SharedPreferences¶ÔÏó
+     * åˆ›å»ºSharedPreferenceså¯¹è±¡
      */
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
-
+    
+    /**
+     * æŒ‰ä¸¤ä¸‹é€€å‡ºæ—¶é—´
+     */
     private long exitTime;
 
     @Override
@@ -102,7 +106,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.weather_layout);
-        // ³õÊ¼»¯¸÷¿Ø¼ş
+        // åˆå§‹åŒ–å„æ§ä»¶
         weatherInfoLayout = (LinearLayout) findViewById(R.id.weather_info_layout);
         cityNameText = (TextView) findViewById(R.id.city_name);
         publishText = (TextView) findViewById(R.id.publish_text);
@@ -112,13 +116,13 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
         currentDateText = (TextView) findViewById(R.id.current_date);
         String countyCode = getIntent().getStringExtra("county_code");
         if (!TextUtils.isEmpty(countyCode)) {
-            // ÓĞÏØ¼¶´úºÅÊ±¾ÍÈ¥²éÑ¯ÌìÆø
-            publishText.setText("Í¬²½ÖĞ...");
+            // æœ‰å¿çº§ä»£å·æ—¶å°±å»æŸ¥è¯¢å¤©æ°”
+            publishText.setText("åŒæ­¥ä¸­...");
             weatherInfoLayout.setVisibility(View.INVISIBLE);
             cityNameText.setVisibility(View.INVISIBLE);
             queryWeatherCode(countyCode);
         } else {
-            // Ã»ÓĞÏØ¼¶´úºÅÊ±¾ÍÖ±½ÓÏÔÊ¾±¾µØÌìÆø
+            // æ²¡æœ‰å¿çº§ä»£å·æ—¶å°±ç›´æ¥æ˜¾ç¤ºæœ¬åœ°å¤©æ°”
             showWeather();
         }
         switchCity = (Button) findViewById(R.id.switch_city);
@@ -139,7 +143,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
                 finish();
                 break;
             case R.id.refresh_weather:
-                publishText.setText(" Í¬²½ÖĞ...");
+                publishText.setText(" åŒæ­¥ä¸­...");
                 SharedPreferences prefs = PreferenceManager.
                         getDefaultSharedPreferences(this);
                 String weatherCode = prefs.getString("weather_code", "");
@@ -155,7 +159,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
     }
 
     /**
-     * ²éÑ¯ÏØ¼¶´úºÅËù¶ÔÓ¦µÄÌìÆø´úºÅ¡£
+     * æŸ¥è¯¢å¿çº§ä»£å·æ‰€å¯¹åº”çš„å¤©æ°”ä»£å·ã€‚
      */
     private void queryWeatherCode(String countyCode) {
         String address = "http://www.weather.com.cn/data/list3/city" + countyCode + ".xml";
@@ -163,7 +167,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
     }
 
     /**
-     * ²éÑ¯ÌìÆø´úºÅËù¶ÔÓ¦µÄÌìÆø¡£
+     * æŸ¥è¯¢å¤©æ°”ä»£å·æ‰€å¯¹åº”çš„å¤©æ°”ã€‚
      */
     private void queryWeatherInfo(String weatherCode) {
         String address = "http://www.weather.com.cn/data/cityinfo/" + weatherCode + ".html";
@@ -171,7 +175,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
     }
 
     /**
-     * ¸ù¾İ´«ÈëµÄµØÖ·ºÍÀàĞÍÈ¥Ïò·şÎñÆ÷²éÑ¯ÌìÆø´úºÅ»òÕßÌìÆøĞÅÏ¢¡£
+     * æ ¹æ®ä¼ å…¥çš„åœ°å€å’Œç±»å‹å»å‘æœåŠ¡å™¨æŸ¥è¯¢å¤©æ°”ä»£å·æˆ–è€…å¤©æ°”ä¿¡æ¯ã€‚
      */
     private void queryFromServer(final String address, final String type) {
         HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
@@ -179,7 +183,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
             public void onFinish(final String response) {
                 if ("countyCode".equals(type)) {
                     if (!TextUtils.isEmpty(response)) {
-                        // ´Ó·şÎñÆ÷·µ»ØµÄÊı¾İÖĞ½âÎö³öÌìÆø´úºÅ
+                        // ä»æœåŠ¡å™¨è¿”å›çš„æ•°æ®ä¸­è§£æå‡ºå¤©æ°”ä»£å·
                         String[] array = response.split("\\|");
                         if (array != null && array.length == 2) {
                             String weatherCode = array[1];
@@ -187,7 +191,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
                         }
                     }
                 } else if ("weatherCode".equals(type)) {
-                    // ´¦Àí·şÎñÆ÷·µ»ØµÄÌìÆøĞÅÏ¢
+                    // å¤„ç†æœåŠ¡å™¨è¿”å›çš„å¤©æ°”ä¿¡æ¯
                     Utility.handleWeatherResponse(WeatherActivity.this,
                             response);
                     runOnUiThread(new Runnable() {
@@ -204,7 +208,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        publishText.setText("Í¬²½Ê§°Ü");
+                        publishText.setText("åŒæ­¥å¤±è´¥");
                     }
                 });
             }
@@ -212,7 +216,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
     }
 
     /**
-     * ´ÓSharedPreferencesÎÄ¼şÖĞ¶ÁÈ¡´æ´¢µÄÌìÆøĞÅÏ¢£¬²¢ÏÔÊ¾µ½½çÃæÉÏ¡£
+     * ä»SharedPreferencesæ–‡ä»¶ä¸­è¯»å–å­˜å‚¨çš„å¤©æ°”ä¿¡æ¯ï¼Œå¹¶æ˜¾ç¤ºåˆ°ç•Œé¢ä¸Šã€‚
      */
     private void showWeather() {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -224,7 +228,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
         if (myWeather != null) {
             changeBackground(myWeather);
         }
-        publishText.setText("½ñÌì" + prefs.getString("publish_time", "") + "·¢²¼");
+        publishText.setText("ä»Šå¤©" + prefs.getString("publish_time", "") + "å‘å¸ƒ");
         currentDateText.setText(prefs.getString("current_date", ""));
         weatherInfoLayout.setVisibility(View.VISIBLE);
         cityNameText.setVisibility(View.VISIBLE);
@@ -233,7 +237,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
     }
 
     /**
-     * ÌìÆøµÄÃ¶¾ÙÀàĞÍ
+     * å¤©æ°”çš„æšä¸¾ç±»å‹
      */
     private enum WeatherKind {
         cloudy, fog, hailstone, light_rain, moderte_rain, overcast, rain_snow,
@@ -242,32 +246,32 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
     }
 
     /**
-     * ´´½¨HashMap¶ÔÏó£¬ÖĞÎÄÌìÆøÇé¿öµÄ¼ü¶ÔÓ¦Ã¶¾ÙÀàĞÍ
+     * åˆ›å»ºHashMapå¯¹è±¡ï¼Œä¸­æ–‡å¤©æ°”æƒ…å†µçš„é”®å¯¹åº”æšä¸¾ç±»å‹
      */
     private static Map<String, WeatherKind> weatherkind = new HashMap<String, WeatherKind>();
 
     static {
-        weatherkind.put("¶àÔÆ", WeatherKind.cloudy);
-        weatherkind.put("Îí", WeatherKind.fog);
-        weatherkind.put("±ù±¢", WeatherKind.hailstone);
-        weatherkind.put("Ğ¡Óê", WeatherKind.light_rain);
-        weatherkind.put("ÖĞÓê", WeatherKind.moderte_rain);
-        weatherkind.put("Òõ", WeatherKind.overcast);
-        weatherkind.put("Óê¼ÓÑ©", WeatherKind.rain_snow);
-        weatherkind.put("É³³¾±©", WeatherKind.sand_strom);
-        weatherkind.put("±©Óê", WeatherKind.rainstorm);
-        weatherkind.put("ÕóÓê", WeatherKind.shower_rain);
-        weatherkind.put("Ğ¡Ñ©", WeatherKind.snow);
-        weatherkind.put("Çç", WeatherKind.sunny);
-        weatherkind.put("À×ÕóÓê", WeatherKind.thundershower);
-        weatherkind.put("À×ÕóÓê×ªÕóÓê", WeatherKind.thundershower_shower_rain);
-        weatherkind.put("ÕóÓê×ªÖĞÓê", WeatherKind.shower_rain_moderte_rain);
-        weatherkind.put("¶àÔÆ×ªÇç", WeatherKind.cloudy_sunny);
-        weatherkind.put("ÕóÓê×ªÀ×ÕóÓê", WeatherKind.shower_rain_thundershower);
+        weatherkind.put("å¤šäº‘", WeatherKind.cloudy);
+        weatherkind.put("é›¾", WeatherKind.fog);
+        weatherkind.put("å†°é›¹", WeatherKind.hailstone);
+        weatherkind.put("å°é›¨", WeatherKind.light_rain);
+        weatherkind.put("ä¸­é›¨", WeatherKind.moderte_rain);
+        weatherkind.put("é˜´", WeatherKind.overcast);
+        weatherkind.put("é›¨åŠ é›ª", WeatherKind.rain_snow);
+        weatherkind.put("æ²™å°˜æš´", WeatherKind.sand_strom);
+        weatherkind.put("æš´é›¨", WeatherKind.rainstorm);
+        weatherkind.put("é˜µé›¨", WeatherKind.shower_rain);
+        weatherkind.put("å°é›ª", WeatherKind.snow);
+        weatherkind.put("æ™´", WeatherKind.sunny);
+        weatherkind.put("é›·é˜µé›¨", WeatherKind.thundershower);
+        weatherkind.put("é›·é˜µé›¨è½¬é˜µé›¨", WeatherKind.thundershower_shower_rain);
+        weatherkind.put("é˜µé›¨è½¬ä¸­é›¨", WeatherKind.shower_rain_moderte_rain);
+        weatherkind.put("å¤šäº‘è½¬æ™´", WeatherKind.cloudy_sunny);
+        weatherkind.put("é˜µé›¨è½¬é›·é˜µé›¨", WeatherKind.shower_rain_thundershower);
     }
 
     /**
-     * @param weather ´«ÈëµÄÃ¶¾ÙÀàĞÍ
+     * @param weather ä¼ å…¥çš„æšä¸¾ç±»å‹
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void changeBackground(WeatherKind weather) {
@@ -333,7 +337,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
     }
 
     /**
-     * ÉèÖÃ¶Ô»°¿ò
+     * è®¾ç½®å¯¹è¯æ¡†
      */
     private void showDialog() {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -342,6 +346,13 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
         autoUpdateTime = (EditText) view.findViewById(R.id.ed_pl);
         ok = (Button) view.findViewById(R.id.ok);
         cancel = (Button) view.findViewById(R.id.cancel);
+        autoUpdate = (CheckBox) findViewById(R.id.auto_update); 
+        boolean autoUpdate = prefs.getBoolean("auto_update", true);  
+        int updateTime = prefs.getInt("auto_update_time", 8); 
+        if (autoUpdate) {  
+            autoUpdateBox.setChecked(true);  
+            autoUpdateTime.setText(updateTime);  
+        }  
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -351,16 +362,21 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int time = 8;
-                editor = prefs.edit();
+                editor = pref.edit();  
+                if (autoUpdateBox.isChecked()) {  
+                    editor.putBoolean("auto_update", true);
                 if (!TextUtils.isEmpty(autoUpdateTime.getText())) {
-                    String updataTime = autoUpdateTime.getText().toString();
-                    time = Integer.parseInt(updataTime);
-                    editor.putInt("auto_update_time", time);
+                    int updataTime = autoUpdateTime.getText();
+                    editor.putInt("auto_update_time", updataTime);
                 }
-                editor.commit();
                 Intent intent = new Intent(WeatherActivity.this, AutoUpdateService.class);
                 startService(intent);
+            } else {  
+                editor.putBoolean("auto_update", false);  
+                Intent intent = new Intent(WeatherActivity.this, AutoUpdateService.class);  
+                stopService(intent); 
+            }  
+                editor.commit();
                 dialog.dismiss();
             }
         });
@@ -381,7 +397,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //Ç¿ÖÆpopupÏÔÊ¾Icon
+        //å¼ºåˆ¶popupæ˜¾ç¤ºIcon
         popup.show();
     }
 
@@ -401,8 +417,8 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
 
     @Override
     public void onBackPressed() {
-        if ((System.currentTimeMillis() - exitTime) > 2000) {// System.currentTimeMillis()ÎŞÂÛºÎÊ±µ÷ÓÃ£¬¿Ï¶¨´óÓÚ2000
-            Toast.makeText(this, "ÔÙ°´Ò»´ÎÍË³ö³ÌĞò", Toast.LENGTH_SHORT).show();
+        if ((System.currentTimeMillis() - exitTime) > 2000) {// System.currentTimeMillis()æ— è®ºä½•æ—¶è°ƒç”¨ï¼Œè‚¯å®šå¤§äº2000
+            Toast.makeText(this, "å†æŒ‰ä¸€æ¬¡é€€å‡ºç¨‹åº", Toast.LENGTH_SHORT).show();
             exitTime = System.currentTimeMillis();
         } else {
             finish();
