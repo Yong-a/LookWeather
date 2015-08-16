@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:layout_width="300dp"
+        android:layout_width="310dp"
         android:layout_height="50dp"
         android:background="@drawable/dialog_t"
         android:gravity="center"
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/edit"
             android:gravity="center"
-            android:hint="8"
+            android:hint="--"
             android:inputType="number"
             android:textCursorDrawable="@null" />
 
