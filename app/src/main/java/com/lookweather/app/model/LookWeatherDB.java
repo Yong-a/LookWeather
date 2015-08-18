@@ -32,7 +32,7 @@ public class LookWeatherDB {
         db = dbHelper.getWritableDatabase();
     }
     /**
-     * 获取CoolWeatherDB的实例。
+     * 获取LookWeatherDB的实例。
      */
     public synchronized static LookWeatherDB getInstance(Context context) {
         if (lookWeatherDB == null) {

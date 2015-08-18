@@ -234,8 +234,11 @@ public class WeatherActivity extends Activity implements View.OnClickListener, P
         currentDateText.setText(prefs.getString("current_date", ""));
         weatherInfoLayout.setVisibility(View.VISIBLE);
         cityNameText.setVisibility(View.VISIBLE);
-        Intent intent = new Intent(WeatherActivity.this, AutoUpdateService.class);
-        startService(intent);
+        boolean autoUpdate = prefs.getBoolean("auto_update", true);
+        if (autoUpdate) {
+            Intent intent = new Intent(WeatherActivity.this, AutoUpdateService.class);
+            startService(intent);
+        }
     }
 
     /**
